@@ -3,17 +3,17 @@ import 'waypoints/lib/noframework.waypoints'
 const Waypoint = window.Waypoint
 
 function ViewportCheck ({
-                          element = null,
-                          parentEle = null,
-                          offset = 0.3,
-                          enter = () => {},
-                          leave = () => {},
-                          autoDestroy = false,
-                          includeBorder = true,
-                          padding = true,
-                          border = true,
-                          margin = false,
-                        } = {}) {
+  element = null,
+  parentEle = null,
+  offset = 0.3,
+  enter = () => {},
+  leave = () => {},
+  autoDestroy = false,
+  includeBorder = true,
+  padding = true,
+  border = true,
+  margin = false,
+} = {}) {
   if (!element) {
     throw new Error('Must need element!')
   }
@@ -31,24 +31,24 @@ function ViewportCheck ({
   this.leave = leave
   this.autoDestroy = autoDestroy
 
-  let computedStyle=window.getComputedStyle(element, null)
-  let pureHeight=this.getStyle(computedStyle,'height')
-  let marginTop = this.getStyle(computedStyle, 'marginTop')
-  let marginBottom = this.getStyle(computedStyle, 'marginBottom')
-  let borderTop = this.getStyle(computedStyle, 'borderTopWidth')
-  let borderBottom = this.getStyle(computedStyle, 'borderBottomWidth')
-  let paddingTop = this.getStyle(computedStyle, 'paddingTop')
-  let paddingBottom = this.getStyle(computedStyle, 'paddingBottom')
+  const computedStyle = window.getComputedStyle(element, null)
+  const pureHeight = this.getStyle(computedStyle, 'height')
+  const marginTop = this.getStyle(computedStyle, 'marginTop')
+  const marginBottom = this.getStyle(computedStyle, 'marginBottom')
+  const borderTop = this.getStyle(computedStyle, 'borderTopWidth')
+  const borderBottom = this.getStyle(computedStyle, 'borderBottomWidth')
+  const paddingTop = this.getStyle(computedStyle, 'paddingTop')
+  const paddingBottom = this.getStyle(computedStyle, 'paddingBottom')
 
-  this.elementH=pureHeight
+  this.elementH = pureHeight + paddingTop + paddingBottom + borderTop + borderBottom
 
   // 当getBoundingClientRect计算的 高度和 computedStyle 计算的高度不同时
   // waypoints 的 页面高度基于 getBoundingClientRect计算的，因此这里优先使用getBoundingClientRect
   // 如果优先使用 computedStyle，当遇到元素 scale(0)时，会出现进入视口不执行的bug
-  if(this.element.getBoundingClientRect){
-    let boundH=this.element.getBoundingClientRect().height
-    if(boundH!==this.elementH){
-      this.elementH=boundH
+  if (this.element.getBoundingClientRect) {
+    const boundH = this.element.getBoundingClientRect().height
+    if (boundH !== this.elementH) {
+      this.elementH = boundH
     }
   }
 
@@ -57,20 +57,20 @@ function ViewportCheck ({
   let offsetT = 0
   this.elementOffsetTop = this.getOffsetTop(element)
   if (margin) {
-    this.elementH += paddingTop + paddingBottom + borderTop + borderBottom + marginTop + marginBottom
+    this.elementH += marginTop + marginBottom
     this.elementOffsetTop -= marginTop
     offsetT = this.getOffsetT() + marginTop
     offsetB = this.getOffsetB() + marginBottom
   } else if (border) {
-    this.elementH += paddingTop + paddingBottom + borderTop + borderBottom
     offsetT = this.getOffsetT()
     offsetB = this.getOffsetB()
   } else if (padding) {
-    this.elementH += paddingTop + paddingBottom
+    this.elementH = this.elementH - (borderTop + borderBottom)
     this.elementOffsetTop += borderTop
     offsetT = this.getOffsetT() - borderBottom
     offsetB = this.getOffsetB() - borderTop
   } else {
+    this.elementH = this.elementH - (paddingTop + paddingBottom + borderTop + borderBottom)
     this.elementOffsetTop += borderTop + paddingTop
     offsetT = this.getOffsetT() - borderBottom - paddingBottom
     offsetB = this.getOffsetB() - borderTop - paddingTop
@@ -130,7 +130,7 @@ ViewportCheck.prototype.getScrollTop = function () {
 }
 
 ViewportCheck.prototype.getOffsetTop = function (ele) {
-  if(ele.getBoundingClientRect){
+  if (ele.getBoundingClientRect) {
     return ele.getBoundingClientRect().top + this.getScrollTop()
   }
   let offsetTop = ele.offsetTop

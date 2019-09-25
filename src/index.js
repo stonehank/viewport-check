@@ -3,17 +3,17 @@ import 'waypoints/lib/noframework.waypoints'
 const Waypoint = window.Waypoint
 
 function ViewportCheck ({
-  element = null,
-  parentEle = null,
-  offset = 0.3,
-  enter = () => {},
-  leave = () => {},
-  autoDestroy = false,
-  includeBorder = true,
-  padding = true,
-  border = true,
-  margin = false,
-} = {}) {
+                          element = null,
+                          parentEle = null,
+                          offset = 0.3,
+                          enter = () => {},
+                          leave = () => {},
+                          autoDestroy = false,
+                          includeBorder = true,
+                          padding = true,
+                          border = true,
+                          margin = false,
+                        } = {}) {
   if (!element) {
     throw new Error('Must need element!')
   }
@@ -31,42 +31,49 @@ function ViewportCheck ({
   this.leave = leave
   this.autoDestroy = autoDestroy
 
+  let computedStyle=window.getComputedStyle(element, null)
+  let pureHeight=this.getStyle(computedStyle,'height')
+  let marginTop = this.getStyle(computedStyle, 'marginTop')
+  let marginBottom = this.getStyle(computedStyle, 'marginBottom')
+  let borderTop = this.getStyle(computedStyle, 'borderTopWidth')
+  let borderBottom = this.getStyle(computedStyle, 'borderBottomWidth')
+  let paddingTop = this.getStyle(computedStyle, 'paddingTop')
+  let paddingBottom = this.getStyle(computedStyle, 'paddingBottom')
+
+  this.elementH=pureHeight
+
+  // 当getBoundingClientRect计算的 高度和 computedStyle 计算的高度不同时
+  // waypoints 的 页面高度基于 getBoundingClientRect计算的，因此这里优先使用getBoundingClientRect
+  // 如果优先使用 computedStyle，当遇到元素 scale(0)时，会出现进入视口不执行的bug
+  if(this.element.getBoundingClientRect){
+    let boundH=this.element.getBoundingClientRect().height
+    if(boundH!==this.elementH){
+      this.elementH=boundH
+    }
+  }
+
   this.screenH = window.innerHeight
   let offsetB = 0
   let offsetT = 0
   this.elementOffsetTop = this.getOffsetTop(element)
   if (margin) {
-    this.style = window.getComputedStyle(element, null)
-    this.marginTop = this.getStyle(this.style, 'marginTop')
-    this.marginBottom = this.getStyle(this.style, 'marginBottom')
-
-    this.elementH = this.element.offsetHeight + this.marginTop + this.marginBottom
-    this.elementOffsetTop -= this.marginTop
-    offsetT = this.getOffsetT() + this.marginTop
-    offsetB = this.getOffsetB() + this.marginBottom
+    this.elementH += paddingTop + paddingBottom + borderTop + borderBottom + marginTop + marginBottom
+    this.elementOffsetTop -= marginTop
+    offsetT = this.getOffsetT() + marginTop
+    offsetB = this.getOffsetB() + marginBottom
   } else if (border) {
-    this.elementH = this.element.offsetHeight
+    this.elementH += paddingTop + paddingBottom + borderTop + borderBottom
     offsetT = this.getOffsetT()
     offsetB = this.getOffsetB()
   } else if (padding) {
-    this.style = window.getComputedStyle(element, null)
-    this.borderTop = this.getStyle(this.style, 'borderTopWidth')
-    this.borderBottom = this.getStyle(this.style, 'borderBottomWidth')
-    this.elementH = this.element.clientHeight
-    this.elementOffsetTop += this.borderTop
-    offsetT = this.getOffsetT() - this.borderBottom
-    offsetB = this.getOffsetB() - this.borderTop
+    this.elementH += paddingTop + paddingBottom
+    this.elementOffsetTop += borderTop
+    offsetT = this.getOffsetT() - borderBottom
+    offsetB = this.getOffsetB() - borderTop
   } else {
-    this.style = window.getComputedStyle(element, null)
-    this.borderTop = this.getStyle(this.style, 'borderTopWidth')
-    this.borderBottom = this.getStyle(this.style, 'borderBottomWidth')
-    this.paddingTop = this.getStyle(this.style, 'paddingTop')
-    this.paddingBottom = this.getStyle(this.style, 'paddingBottom')
-    this.pureHeight = this.getStyle(this.style, 'height')
-    this.elementH = this.pureHeight
-    this.elementOffsetTop += this.borderTop + this.paddingTop
-    offsetT = this.getOffsetT() - this.borderBottom - this.paddingBottom
-    offsetB = this.getOffsetB() - this.borderTop - this.paddingTop
+    this.elementOffsetTop += borderTop + paddingTop
+    offsetT = this.getOffsetT() - borderBottom - paddingBottom
+    offsetB = this.getOffsetB() - borderTop - paddingTop
   }
 
   this.wayp1 = new Waypoint({
@@ -111,7 +118,7 @@ ViewportCheck.prototype.getOffsetT = function () {
   return -this.elementH + Math.min(this.screenH, this.elementH) * this.offset
 }
 ViewportCheck.prototype.getStyle = function (style, attr) {
-  return parseFloat(style[attr].split('px')[0])
+  return parseFloat(style[attr])
 }
 
 ViewportCheck.prototype.getScrollTop = function () {
@@ -123,6 +130,9 @@ ViewportCheck.prototype.getScrollTop = function () {
 }
 
 ViewportCheck.prototype.getOffsetTop = function (ele) {
+  if(ele.getBoundingClientRect){
+    return ele.getBoundingClientRect().top + this.getScrollTop()
+  }
   let offsetTop = ele.offsetTop
   if (ele.offsetParent) {
     offsetTop += this.getOffsetTop(ele.offsetParent)
@@ -136,8 +146,7 @@ ViewportCheck.prototype.exec = function (direction) {
       this.topPass = true
     }
   }
-  console.log(this.elementH - (this.getScrollTop() - this.elementOffsetTop) >= Math.min(this.screenH, this.elementH) * this.offset, this.topPass)
-  console.log(this.elementH, this.getScrollTop(), this.elementOffsetTop, this.screenH)
+
   if (this.bottomPass && this.topPass) {
     this.enter(direction)
     if (this.autoDestroy) this.destroy()

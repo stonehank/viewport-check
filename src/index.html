@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin:0;padding:0;
+        }
+        #wrapper{
+            width:300px;
+            list-style: none;
+        }
+        #wrapper li{
+            background:#ccc;
+            width:200px;
+            height:200px;
+            padding:200px;
+            margin:40px;
+        }
+        .show-result{
+            position: fixed;
+            width: 200px;
+            height: 100px;
+            font-size: 18px;
+            right: 0;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+<ul id="wrapper">
+    <li>5</li>
+    <li>4</li>
+    <li>3</li>
+    <li>2</li>
+    <li>1</li>
+    <li>0</li>
+    <li>-1</li>
+    <li>-2</li>
+    <li>-3</li>
+</ul>
+<div class="show-result"></div>
+<script>
+    window.onload=function(){
+      let resultDom=document.getElementsByClassName('show-result')[0]
+      let wrapper=document.getElementById("wrapper")
+      let children=wrapper.children
+      let zero=children[5]
+      window.a=new ViewportCheck({
+        element:zero,
+        offset:1,
+        // margin:true,
+        // border:false,
+        // padding:false,
+        // autoDestroy:true,
+        enter:()=>{
+          // alert('Zero will be color!')
+          zero.style.background='steelblue'
+          resultDom.innerHTML="进入视口"
+        },
+        leave:()=>{
+          // alert('This never show!')
+          zero.style.background='#fff'
+          resultDom.innerHTML="退出视口"
+        },
+
+      })
+    }
+
+</script>
+</body>
+</html>

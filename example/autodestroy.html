@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #wrapper{
+            width:300px;
+            list-style: none;
+        }
+        #wrapper li{
+            background:#ccc;
+            width:200px;
+            height:200px;
+            margin:100px;
+            padding:150px;
+            border:50px solid #000;
+        }
+    </style>
+    <script src="../dist/index.js"></script>
+</head>
+<body>
+<ul id="wrapper">
+    <li>5</li>
+    <li>4</li>
+    <li>3</li>
+    <li>2</li>
+    <li>1</li>
+    <li>0</li>
+    <li>-1</li>
+    <li>-2</li>
+    <li>-3</li>
+</ul>
+<script>
+    let wrapper=document.getElementById("wrapper")
+    let children=wrapper.children
+    let zero=children[5]
+    let a=new ViewportCheck({
+      element:zero,
+      offset:0,
+      autoDestroy:true,
+      enter:()=>{
+        alert('Zero will be color!')
+        zero.style.background='steelblue'
+      },
+      leave:()=>{
+        alert('This never show!')
+      }
+    })
+</script>
+</body>
+</html>

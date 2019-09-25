@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #box{
+            position:relative;
+            margin-top:500px;
+        }
+        #wrapper{
+            width:300px;
+            list-style: none;
+        }
+        #wrapper li{
+            background:#ccc;
+            width:200px;
+            height:200px;
+            margin:50px;
+        }
+        .zero{
+            border:100px solid #000;
+        }
+    </style>
+    <script src="../dist/index.js"></script>
+</head>
+<body>
+<div id="box">
+    <ul id="wrapper">
+        <li>5</li>
+        <li>4</li>
+        <li>3</li>
+        <li>2</li>
+        <li>1</li>
+        <li class="zero">0</li>
+        <li>-1</li>
+        <li>-2</li>
+        <li>-3</li>
+    </ul>
+</div>
+
+<script>
+  let wrapper=document.getElementById("wrapper")
+  let children=wrapper.children
+  let zero=children[5]
+  let a=new ViewportCheck({
+    element:zero,
+    border:false,
+    offset:0.3,
+    enter:()=>{
+      zero.style.background='steelblue'
+    },
+    leave:()=>{
+      zero.style.background='#fff'
+    }
+  })
+</script>
+</body>
+</html>

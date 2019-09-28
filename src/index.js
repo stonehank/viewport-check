@@ -10,6 +10,7 @@ function ViewportCheck ({
   leave = () => {},
   autoDestroy = false,
   includeBorder = true,
+  useCssHeight = false,
   padding = true,
   border = true,
   margin = false,
@@ -30,22 +31,23 @@ function ViewportCheck ({
   this.enter = enter
   this.leave = leave
   this.autoDestroy = autoDestroy
+  this.useCssHeight = useCssHeight
 
-  const computedStyle = window.getComputedStyle(element, null)
-  const pureHeight = this.getStyle(computedStyle, 'height')
-  const marginTop = this.getStyle(computedStyle, 'marginTop')
-  const marginBottom = this.getStyle(computedStyle, 'marginBottom')
-  const borderTop = this.getStyle(computedStyle, 'borderTopWidth')
-  const borderBottom = this.getStyle(computedStyle, 'borderBottomWidth')
-  const paddingTop = this.getStyle(computedStyle, 'paddingTop')
-  const paddingBottom = this.getStyle(computedStyle, 'paddingBottom')
+  this.computedStyle = window.getComputedStyle(element, null)
+  const pureHeight = this.getStyle(this.computedStyle, 'height')
+  const marginTop = this.getStyle(this.computedStyle, 'marginTop')
+  const marginBottom = this.getStyle(this.computedStyle, 'marginBottom')
+  const borderTop = this.getStyle(this.computedStyle, 'borderTopWidth')
+  const borderBottom = this.getStyle(this.computedStyle, 'borderBottomWidth')
+  const paddingTop = this.getStyle(this.computedStyle, 'paddingTop')
+  const paddingBottom = this.getStyle(this.computedStyle, 'paddingBottom')
 
-  this.elementH = pureHeight + paddingTop + paddingBottom + borderTop + borderBottom
+  this.elementH = this.element.offsetHeight
 
   // 当getBoundingClientRect计算的 高度和 computedStyle 计算的高度不同时
   // waypoints 的 页面高度基于 getBoundingClientRect计算的，因此这里优先使用getBoundingClientRect
   // 如果优先使用 computedStyle，当遇到元素 scale(0)时，会出现进入视口不执行的bug
-  if (this.element.getBoundingClientRect) {
+  if (!this.useCssHeight && this.element.getBoundingClientRect) {
     const boundH = this.element.getBoundingClientRect().height
     if (boundH !== this.elementH) {
       this.elementH = boundH
@@ -74,6 +76,11 @@ function ViewportCheck ({
     this.elementOffsetTop += borderTop + paddingTop
     offsetT = this.getOffsetT() - borderBottom - paddingBottom
     offsetB = this.getOffsetB() - borderTop - paddingTop
+  }
+  if (useCssHeight) {
+    const rect = this.element.getBoundingClientRect()
+    offsetT += (this.elementH - rect.height) / 2
+    offsetB += (this.elementH - rect.height) / 2
   }
 
   this.wayp1 = new Waypoint({
@@ -130,7 +137,7 @@ ViewportCheck.prototype.getScrollTop = function () {
 }
 
 ViewportCheck.prototype.getOffsetTop = function (ele) {
-  if (ele.getBoundingClientRect) {
+  if (!this.useCssHeight && ele.getBoundingClientRect) {
     return ele.getBoundingClientRect().top + this.getScrollTop()
   }
   let offsetTop = ele.offsetTop
@@ -157,6 +164,13 @@ ViewportCheck.prototype.exec = function (direction) {
 ViewportCheck.prototype.destroy = function () {
   this.wayp1.destroy()
   this.wayp2.destroy()
+  this.wayp1 = null
+  this.wayp2 = null
+  this.parentEle = null
+  this.element = null
+  this.enter = null
+  this.leave = null
+  this.computedStyle = null
 }
 
 window.ViewportCheck = ViewportCheck

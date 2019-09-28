@@ -21,7 +21,7 @@
             transition:1s;
         }
         #zero{
-            transform:scale(0.3)
+            transform:scale(0)
         }
         .show-result{
             position: fixed;
@@ -35,6 +35,7 @@
             justify-content: center;
         }
     </style>
+    <script src="../dist"></script>
 </head>
 <body>
 <ul id="wrapper">
@@ -48,26 +49,40 @@
     <li>-2</li>
     <li>-3</li>
 </ul>
-<div class="show-result">视口外</div>
+<div class="show-result">第一次进入视口是在0的中间处</div>
 <script>
-    window.onload=function(){
-      let resultDom=document.getElementsByClassName('show-result')[0]
-      let zero=document.getElementById("zero")
-      window.a=new ViewportCheck({
-        element:zero,
-        offset:0.2,
-        useCssHeight:true,
-        enter:()=>{
-          zero.style.transform='scale(1)'
-          zero.style.background='steelblue'
-          resultDom.innerHTML="进入视口"
-        },
-        leave:()=>{
-          zero.style.background='#fff'
-          resultDom.innerHTML="退出视口"
-        },
-      })
-    }
+  window.onload=function(){
+    let resultDom=document.getElementsByClassName('show-result')[0]
+    let zero=document.getElementById("zero")
+    let initEnter=false
+    window.a=new ViewportCheck({
+      element:zero,
+      offset:0,
+      autoDestroy:true,
+      enter:()=>{
+        zero.style.transform='scale(1)'
+        resultDom.innerHTML="第一次进入视口，之后退出和进入视口都在0的边缘处"
+        initEnter=true
+      },
+    })
+    new ViewportCheck({
+      element:zero,
+      offset:0,
+      useCssHeight:true,
+      enter:()=>{
+        if(!initEnter)return
+        zero.style.background='steelblue'
+        resultDom.innerHTML="进入视口"
+      },
+      leave:()=>{
+        if(!initEnter)return
+        zero.style.background='#fff'
+        resultDom.innerHTML="退出视口"
+      },
+
+    })
+
+  }
 
 </script>
 </body>

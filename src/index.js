@@ -38,7 +38,7 @@ function ViewportCheck ({
 
   this.computedStyle = window.getComputedStyle(element, null)
   // const pureHeight = this.getStyle(this.computedStyle, 'height')
-  const marginTop = this.getStyle(this.computedStyle, 'marginTop')
+  const marginTop = this.getStyle(this.computedStyle, '  marginTop')
   const marginBottom = this.getStyle(this.computedStyle, 'marginBottom')
   const borderTop = this.getStyle(this.computedStyle, 'borderTopWidth')
   const borderBottom = this.getStyle(this.computedStyle, 'borderBottomWidth')

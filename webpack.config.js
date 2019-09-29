@@ -23,8 +23,8 @@ module.exports = {
   plugins: [
     !isDev && new CleanWebpackPlugin(),
     new WebpackBar(),
-    new BundleAnalyzerPlugin(),
-    new HtmlWebpackPlugin({
+    !isDev && new BundleAnalyzerPlugin(),
+    isDev && new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname,'src/index.html'),
       inject: true,

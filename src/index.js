@@ -8,6 +8,7 @@ function ViewportCheck ({
   offset = 0.3,
   enter = () => {},
   leave = () => {},
+  baseAt = 'target',
   autoDestroy = false,
   includeBorder = true,
   useCssHeight = false,
@@ -23,18 +24,20 @@ function ViewportCheck ({
     this.parentIsWindow = true
     this.parentEle = window
   }
+
   this.element = element
   this.bottomPass = false
   this.topPass = false
   this.state = 'stay'
-  this.offset = offset
+  // this.offset = offset
   this.enter = enter
   this.leave = leave
   this.autoDestroy = autoDestroy
   this.useCssHeight = useCssHeight
+  this.baseAt = baseAt
 
   this.computedStyle = window.getComputedStyle(element, null)
-  const pureHeight = this.getStyle(this.computedStyle, 'height')
+  // const pureHeight = this.getStyle(this.computedStyle, 'height')
   const marginTop = this.getStyle(this.computedStyle, 'marginTop')
   const marginBottom = this.getStyle(this.computedStyle, 'marginBottom')
   const borderTop = this.getStyle(this.computedStyle, 'borderTopWidth')
@@ -43,6 +46,7 @@ function ViewportCheck ({
   const paddingBottom = this.getStyle(this.computedStyle, 'paddingBottom')
 
   this.elementH = this.element.offsetHeight
+  this.screenH = window.innerHeight
 
   // 当getBoundingClientRect计算的 高度和 computedStyle 计算的高度不同时
   // waypoints 的 页面高度基于 getBoundingClientRect计算的，因此这里优先使用getBoundingClientRect
@@ -54,10 +58,32 @@ function ViewportCheck ({
     }
   }
 
-  this.screenH = window.innerHeight
+  this.baseScreenOffset = 0
+  this.baseTargetOffset = 0
+  if (typeof offset === 'string') {
+    if (offset[offset.length - 1] === '%') {
+      const percent = parseFloat(offset) / 100
+      this.baseScreenOffset = this.screenH * percent
+      this.baseTargetOffset = Math.min(this.elementH, this.screenH) * percent
+    } else {
+      const parse = parseFloat(offset)
+      this.baseScreenOffset = parse
+      this.baseTargetOffset = parse
+    }
+  } else {
+    if (offset <= 1) {
+      this.baseScreenOffset = this.screenH * offset
+      this.baseTargetOffset = Math.min(this.elementH, this.screenH) * offset
+    } else {
+      this.baseScreenOffset = offset
+      this.baseTargetOffset = offset
+    }
+  }
+
   let offsetB = 0
   let offsetT = 0
   this.elementOffsetTop = this.getOffsetTop(element)
+
   if (margin) {
     this.elementH += marginTop + marginBottom
     this.elementOffsetTop -= marginTop
@@ -77,15 +103,18 @@ function ViewportCheck ({
     offsetT = this.getOffsetT() - borderBottom - paddingBottom
     offsetB = this.getOffsetB() - borderTop - paddingTop
   }
+
+  // console.log(offsetT, offsetB, this.elementH)
   if (useCssHeight) {
     const rect = this.element.getBoundingClientRect()
-    offsetT += (this.elementH - rect.height) / 2
-    offsetB += (this.elementH - rect.height) / 2
+    offsetT += (this.element.offsetHeight - rect.height) / 2
+    offsetB += (this.element.offsetHeight - rect.height) / 2
   }
 
   this.wayp1 = new Waypoint({
     element: element,
     offset: offsetB,
+    // continuous: true,
     handler: (direction) => {
       if (direction === 'down') {
         this.bottomPass = true
@@ -94,7 +123,11 @@ function ViewportCheck ({
           this.leave(direction)
         }
         this.bottomPass = false
-        this.state = 'out'
+        if (!this.topPass) {
+          this.state = 'stay'
+        } else {
+          this.state = 'out'
+        }
       }
       this.exec(direction)
     }
@@ -102,6 +135,7 @@ function ViewportCheck ({
   this.wayp2 = new Waypoint({
     element: element,
     offset: offsetT,
+    // continuous: true,
     handler: (direction) => {
       if (direction === 'up') {
         this.topPass = true
@@ -110,7 +144,11 @@ function ViewportCheck ({
           this.leave(direction)
         }
         this.topPass = false
-        this.state = 'out'
+        if (!this.bottomPass) {
+          this.state = 'stay'
+        } else {
+          this.state = 'out'
+        }
       }
       this.exec(direction)
     }
@@ -118,11 +156,21 @@ function ViewportCheck ({
 }
 
 ViewportCheck.prototype.getOffsetB = function () {
-  return this.screenH - Math.min(this.screenH, this.elementH) * this.offset
+  if (this.baseAt === 'screen') {
+    // return this.screenH * this.offset
+    return this.baseScreenOffset
+  }
+  // return this.screenH - Math.min(this.screenH, this.elementH) * this.offset
+  return this.screenH - this.baseTargetOffset
 }
 
 ViewportCheck.prototype.getOffsetT = function () {
-  return -this.elementH + Math.min(this.screenH, this.elementH) * this.offset
+  if (this.baseAt === 'screen') {
+    // return this.screenH * this.offset - this.elementH
+    return this.baseScreenOffset - this.elementH
+  }
+  // return Math.min(this.screenH, this.elementH) * this.offset - this.elementH
+  return this.baseTargetOffset - this.elementH
 }
 ViewportCheck.prototype.getStyle = function (style, attr) {
   return parseFloat(style[attr])
@@ -149,7 +197,7 @@ ViewportCheck.prototype.getOffsetTop = function (ele) {
 
 ViewportCheck.prototype.exec = function (direction) {
   if (this.state === 'stay') {
-    if (this.elementH - (this.getScrollTop() - this.elementOffsetTop) >= Math.min(this.screenH, this.elementH) * this.offset) {
+    if (this.elementH - (this.getScrollTop() - this.elementOffsetTop) >= this.baseTargetOffset) {
       this.topPass = true
     }
   }

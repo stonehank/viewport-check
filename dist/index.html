@@ -63,7 +63,7 @@
     <li>-10</li>
 </ul>
 <div class="show-result">视口外</div>
-<script src="./testSystem.js"></script>
+<script src="/example/testSystem.js"></script>
 <script src="../dist/index.js"></script>
 <script>
   window.onload=function(){
@@ -72,8 +72,7 @@
     let enter=false
     new ViewportCheck({
       element:zero,
-      offset:0,
-      autoDestroy:true,
+      offset:0.3,
       enter:()=>{
         zero.style.transform='scale(1)'
         zero.style.background='steelblue'
@@ -81,7 +80,6 @@
         enter=true
       },
       leave:()=>{
-        // Here never trigger
         zero.style.background='#fff'
         resultDom.innerHTML="退出视口"
         enter=false
@@ -89,34 +87,10 @@
     })
 
 
-    function checkEnter(scr){
-      return new Promise((res)=>{
-        window.scrollTo({top:scr})
-        setTimeout(()=>{
-          res(enter)
-        },100)
-      })
-    }
-
-    let m=10,b=20,p=50,h=100
-    let ph=h+p*2+b*2
-    let mh=h+p*2+b*2+m*2
-    let screenH=window.innerHeight
-
-    let test=[
-      h,
-      mh*5,
-      mh*10+m-screenH-1,
-      mh*10+m-screenH,
-      h,
-    ]
-    let ans=[false,false,false,true,true]
-
-    testSystem(test,ans,checkEnter)
 
   }
 
 
 </script>
-</body>
+<script type="text/javascript" src="index.js"></script></body>
 </html>

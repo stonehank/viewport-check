@@ -6,6 +6,7 @@
     <style>
         *{
             margin:0;padding:0;
+            box-sizing: content-box;
         }
         #wrapper{
             width:300px;
@@ -14,14 +15,15 @@
         #wrapper li{
             background:#ccc;
             width:200px;
-            height:200px;
-            padding:200px;
-            border:50px solid #000;
-            margin:40px;
+            height:100px;
+            padding:50px;
+            border:20px solid #000;
+            margin:10px;
             transition:1s;
+            float:left;
         }
         #zero{
-            transform:scale(0.3)
+            /*transform:scale(0)*/
         }
         .show-result{
             position: fixed;
@@ -38,6 +40,11 @@
 </head>
 <body>
 <ul id="wrapper">
+    <li>10</li>
+    <li>9</li>
+    <li>8</li>
+    <li>7</li>
+    <li>6</li>
     <li>5</li>
     <li>4</li>
     <li>3</li>
@@ -47,27 +54,42 @@
     <li>-1</li>
     <li>-2</li>
     <li>-3</li>
+    <li>-4</li>
+    <li>-5</li>
+    <li>-6</li>
+    <li>-7</li>
+    <li>-8</li>
+    <li>-9</li>
+    <li>-10</li>
 </ul>
 <div class="show-result">视口外</div>
+<script src="/example/testSystem.js"></script>
+<script src="../dist/index.js"></script>
 <script>
-    window.onload=function(){
-      let resultDom=document.getElementsByClassName('show-result')[0]
-      let zero=document.getElementById("zero")
-      window.a=new ViewportCheck({
-        element:zero,
-        offset:0.2,
-        useCssHeight:true,
-        enter:()=>{
-          zero.style.transform='scale(1)'
-          zero.style.background='steelblue'
-          resultDom.innerHTML="进入视口"
-        },
-        leave:()=>{
-          zero.style.background='#fff'
-          resultDom.innerHTML="退出视口"
-        },
-      })
-    }
+  window.onload=function(){
+    let resultDom=document.getElementsByClassName('show-result')[0]
+    let zero=document.getElementById("zero")
+    let enter=false
+    new ViewportCheck({
+      element:zero,
+      offset:0.3,
+      enter:()=>{
+        zero.style.transform='scale(1)'
+        zero.style.background='steelblue'
+        resultDom.innerHTML="进入视口"
+        enter=true
+      },
+      leave:()=>{
+        zero.style.background='#fff'
+        resultDom.innerHTML="退出视口"
+        enter=false
+      },
+    })
+
+
+
+  }
+
 
 </script>
 </body>

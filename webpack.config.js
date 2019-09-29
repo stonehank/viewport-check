@@ -21,7 +21,7 @@ module.exports = {
   },
   devtool: isDev ? 'cheap-module-eval-source-map' : false,
   plugins: [
-    new CleanWebpackPlugin(),
+    !isDev && new CleanWebpackPlugin(),
     new WebpackBar(),
     new BundleAnalyzerPlugin(),
     new HtmlWebpackPlugin({
@@ -30,7 +30,7 @@ module.exports = {
       inject: true,
       cache: true,
     })
-  ],
+  ].filter(Boolean),
   optimization: {
     minimize: !isDev,
     minimizer: [new TerserJSPlugin({

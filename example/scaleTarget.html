@@ -23,7 +23,7 @@
             float:left;
         }
         #zero{
-            /*transform:scale(0)*/
+            transform:scale(0)
         }
         .show-result{
             position: fixed;
@@ -73,7 +73,6 @@
     new ViewportCheck({
       element:zero,
       offset:0,
-      autoDestroy:true,
       enter:()=>{
         zero.style.transform='scale(1)'
         zero.style.background='steelblue'
@@ -81,7 +80,6 @@
         enter=true
       },
       leave:()=>{
-        // Here never trigger
         zero.style.background='#fff'
         resultDom.innerHTML="退出视口"
         enter=false
@@ -106,11 +104,12 @@
     let test=[
       h,
       mh*5,
-      mh*10+m-screenH-1,
-      mh*10+m-screenH,
-      h,
+      mh*10+m-screenH+ph/2-1,
+      mh*10+m+ph/2-screenH,
+      mh*11-10-ph/2,
+      mh*11-11-ph/2,
     ]
-    let ans=[false,false,false,true,true]
+    let ans=[false,false,false,true,false,true]
 
     testSystem(test,ans,checkEnter)
 

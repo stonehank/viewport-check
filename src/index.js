@@ -10,7 +10,6 @@ function ViewportCheck ({
   leave = () => {},
   baseAt = 'target',
   autoDestroy = false,
-  includeBorder = true,
   useCssHeight = false,
   padding = true,
   border = true,

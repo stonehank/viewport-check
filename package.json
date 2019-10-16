@@ -10,6 +10,11 @@
   },
   "keywords": ["viewport","waypoints","entry viewport","lazy load"],
   "author": "stonehank",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stonehank/viewport-check.git"
+  },
+  "homepage": "https://github.com/stonehank/viewport-check#README",
   "license": "MIT",
   "dependencies": {
     "waypoints": "^4.0.1"

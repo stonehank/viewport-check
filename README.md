@@ -26,9 +26,9 @@
 
 ### 待添加特性
 
-- [] 横向滚动判断
-- [] 进入视口回调的方向参数
-- [] 基于自定义父组件的滚动
+- [ ] 横向滚动判断
+- [ ] 进入视口回调的方向参数
+- [ ] 基于自定义父组件的滚动
 
 ### 使用说明
 
@@ -43,7 +43,7 @@
 import ViewportCheck from 'viewport-check'
 
 new ViewportCheck({
-  element:document.getElementById("#target"),
+  element:document.getElementById("target"),
   offset:0.3,
   baseAt:'target',
   margin:true,

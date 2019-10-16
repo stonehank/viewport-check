@@ -10,6 +10,7 @@ function ViewportCheck ({
   leave = () => {},
   baseAt = 'target',
   autoDestroy = false,
+  // 避免类似初始化时 scale(0)， 无法准确获取高度
   useCssHeight = false,
   padding = true,
   border = true,
@@ -27,7 +28,7 @@ function ViewportCheck ({
   this.element = element
   this.bottomPass = false
   this.topPass = false
-  this.state = 'stay'
+  this.state = 'standBy'
   // this.offset = offset
   this.enter = enter
   this.leave = leave
@@ -123,7 +124,7 @@ function ViewportCheck ({
         }
         this.bottomPass = false
         if (!this.topPass) {
-          this.state = 'stay'
+          this.state = 'standBy'
         } else {
           this.state = 'out'
         }
@@ -140,11 +141,11 @@ function ViewportCheck ({
         this.topPass = true
       } else {
         if (this.state === 'in') {
-          this.leave(direction)
+          if (typeof this.leave === 'function') this.leave(direction)
         }
         this.topPass = false
         if (!this.bottomPass) {
-          this.state = 'stay'
+          this.state = 'standBy'
         } else {
           this.state = 'out'
         }
@@ -195,22 +196,26 @@ ViewportCheck.prototype.getOffsetTop = function (ele) {
 }
 
 ViewportCheck.prototype.exec = function (direction) {
-  if (this.state === 'stay') {
+  if (this.state === 'standBy') {
     if (this.elementH - (this.getScrollTop() - this.elementOffsetTop) >= this.baseTargetOffset) {
       this.topPass = true
     }
   }
 
   if (this.bottomPass && this.topPass) {
-    this.enter(direction)
-    if (this.autoDestroy) this.destroy()
-    this.state = 'in'
+    if (typeof this.enter === 'function') this.enter(direction)
+    if (this.autoDestroy){
+      this.destroy()
+      this.state='out'
+    }else{
+      this.state = 'in'
+    }
   }
 }
 
 ViewportCheck.prototype.destroy = function () {
-  this.wayp1.destroy()
-  this.wayp2.destroy()
+  if (this.wayp1) this.wayp1.destroy()
+  if (this.wayp2) this.wayp2.destroy()
   this.wayp1 = null
   this.wayp2 = null
   this.parentEle = null

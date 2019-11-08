@@ -57,7 +57,25 @@ new ViewportCheck({
 
 ```
 
-### 关于自定义高度
+### Options
+
+|Attr|Description|Default value|Type|Required|
+|:---|:---|:---:|:---:|:---:|
+|element  |需要监控的元素|/|HTMLElement|true|
+|parentEle|目标元素的父级|window|HTMLElement|false|
+|offset|进出视口的偏移量|0.3|Number[String]|false|
+|baseAt|偏移量基于元素还是屏幕|target|(target/screen)|false|
+|padding|高度计算是否包括padding[更多](#关于高度计算)|true|Boolean|false|
+|border|高度计算是否包括border[更多](#关于高度计算)|true|Boolean|false|
+|margin|高度计算是否包括margin[更多](#关于高度计算)|false|Boolean|false|
+|useCssComputed|是否使用`css`的高度设置，默认为使用`getBoundingClientRect`，这个是为了避免当元素初始为`scale(0)`的情况，无法准确获取高度|false|Boolean|false|
+|autoDestroy|是否在进入视口后销毁|false|Boolean|false|
+|direction|滚动方向|ver|(ver/hor)|false|
+|enter|进入视口的回调函数|()=>{}|Function|false|
+|leave|离开视口的回调函数|()=>{}|Function|false|
+
+
+### 关于高度计算
 
 在css的盒模型中，最外层的是`margin`，接着是`border`，接着是`padding`和`height`。
 

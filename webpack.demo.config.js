@@ -4,14 +4,14 @@ const WebpackBar = require('webpackbar')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const isDev = process.env.NODE_ENV === 'development'
+
 
 module.exports = {
-  mode: isDev ? 'development' : 'production',
-  entry: path.resolve(__dirname,isDev ? 'src/demo.js' : 'src/index.js'),
+  mode: 'production',
+  entry: path.resolve(__dirname,'src/demo.js'),
 
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'demo'),
     filename: 'index.js',
     library:'viewport-check',
     libraryTarget:'umd',
@@ -19,12 +19,12 @@ module.exports = {
   resolve: {
     extensions: ['.js'],
   },
-  devtool: isDev ? 'cheap-module-eval-source-map' : false,
+  devtool:  'cheap-module-eval-source-map',
   plugins: [
-    !isDev && new CleanWebpackPlugin(),
+    new CleanWebpackPlugin(),
     new WebpackBar(),
-    !isDev && new BundleAnalyzerPlugin(),
-    isDev && new HtmlWebpackPlugin({
+    new BundleAnalyzerPlugin(),
+    new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname,'public/index.html'),
       inject: true,
@@ -32,7 +32,7 @@ module.exports = {
     })
   ].filter(Boolean),
   optimization: {
-    minimize: !isDev,
+    minimize: true,
     minimizer: [new TerserJSPlugin({
       cache: true,
       parallel: true,
@@ -40,9 +40,7 @@ module.exports = {
         parse: {
           ecma: 8,
         },
-        compress: isDev
-          ? false
-          : {
+        compress: {
             ecma: 5,
             warnings: false,
             comparisons: false,
@@ -111,26 +109,9 @@ module.exports = {
     warnings: true,
     timings: true,
   },
-  devServer: isDev ? {
-    overlay: true,
-    noInfo: true,
-    clientLogLevel: 'silent',
-    hot: true,
-    port: 3000,
-    host: getIP(),
-  } : {},
+  node:{
+    child_process: 'empty'
+  }
 }
 
-function getIP (force) {
-  if (force) return force
-  const os = require('os')
-  const ifaces = os.networkInterfaces()
-  for (const key in ifaces) {
-    for (const details of ifaces[key]) {
-      if (details.family === 'IPv4' && details.address !== '127.0.0.1') {
-        return details.address
-      }
-    }
-  }
-  return '0.0.0.0'
-}
+

@@ -6,9 +6,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cross-env NODE_ENV=production webpack --colors",
-    "start": "cross-env NODE_ENV=development webpack-dev-server --open"
+    "start": "cross-env NODE_ENV=development webpack-dev-server --open",
+    "build:main": "cross-env NODE_ENV=production webpack --colors",
+    "build:demo": "webpack --config webpack.demo.config.js"
   },
-  "keywords": ["viewport","waypoints","entry viewport","lazy load"],
+  "keywords": [
+    "viewport",
+    "waypoints",
+    "entry viewport",
+    "lazy load"
+  ],
   "author": "stonehank",
   "repository": {
     "type": "git",
@@ -25,6 +32,7 @@
     "babel-loader": "^8.0.2",
     "clean-webpack-plugin": "^3.0.0",
     "cross-env": "^5.2.0",
+    "css-loader": "^3.2.0",
     "ejs-loader": "^0.3.3",
     "eslint": "^6.2.2",
     "eslint-config-standard": "^14.0.1",
@@ -36,6 +44,9 @@
     "html-webpack-plugin": "^3.2.0",
     "image-webpack-loader": "^5.0.0",
     "jest": "^24.9.0",
+    "node-sass": "^4.13.0",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.0.0",
     "terser-webpack-plugin": "^1.4.1",
     "webpack": "^4.38.0",
     "webpack-bundle-analyzer": "^3.4.1",

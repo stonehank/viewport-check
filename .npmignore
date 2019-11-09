@@ -21,6 +21,7 @@ docs
 example
 draft
 index.html
+public
 postcss.config.js
 webpack.config.js
 webpack.dev.config.js

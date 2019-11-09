@@ -5,13 +5,17 @@
 
 ### 特性
 
-1. 可选择基于屏幕或者元素来判断是否进入视口，例如进入屏幕`30%`后，或者元素出现`30%`后
+1. 可选择基于屏幕或者元素来判断是否进入视口，例如进入**滚动容器**`30%`后，或者**元素**出现`30%`后
 
 2. 输入方式多样化，可以输入数字`200`，字符串`30%`，小数`0.3`
 
-3. 可选择`autoDestory`模式，进入视口后，移除监听，销毁对象
+3. 可选择`autoDestory`模式，进入一次视口后，移除监听，销毁对象
 
-4. 元素高度自定义，可选择：
+4. 横向纵向滚动判断
+
+5. 基于自定义容器的滚动，默认为`window`
+
+6. 元素高度自定义，可选择：
     
     1. 包括`margin, border, padding`
     2. 包括`border, padding`，不包括`margin`
@@ -21,14 +25,12 @@
 
 ### 效果查看
 
-[暂无，添加中](https://stonehank.github.io/viewport-check)
+[LIVE DEMO](https://stonehank.github.io/viewport-check)
 
 
 ### 待添加特性
 
-- [x] 横向滚动判断
-- [x] 进入视口回调的方向参数
-- [x] 基于自定义父组件的滚动
+暂无
 
 ### 使用说明
 
@@ -47,11 +49,11 @@ new ViewportCheck({
   offset:0.3,
   baseAt:'target',
   margin:true,
-  enter:() => {
-    console.log('enter, the height include margin, border and padding!')
+  enter:(direction) => {
+    console.log('enter, the height include margin, border and padding! The enter direction is:'+direction)
   },
   leave:() => {
-    console.log('leave')
+    console.log('leave,The leave direction is:'+direction)
   }
 })
 
@@ -71,8 +73,8 @@ new ViewportCheck({
 |useCssComputed|是否使用`css`的高度设置[更多](#使用CSS高度设置)|false|Boolean|false|
 |autoDestroy|是否在进入视口后销毁|false|Boolean|false|
 |horizontal|是否横向滚动|false|Boolean|false|
-|enter|进入视口的回调函数|()=>{}|Function|false|
-|leave|离开视口的回调函数|()=>{}|Function|false|
+|enter|进入视口的回调函数|(direction)=>{}|Function|false|
+|leave|离开视口的回调函数|(direction)=>{}|Function|false|
 
 ### 使用CSS高度设置
 

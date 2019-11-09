@@ -1,6 +1,6 @@
 {
   "name": "viewport-check",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Check element is entry or leave viewport",
   "main": "index.js",
   "scripts": {

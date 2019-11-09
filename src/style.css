@@ -3,29 +3,37 @@
   padding: 0;
   box-sizing: content-box; }
 
+#page {
+  position: relative;
+  min-width: 310px;
+  min-height: 400px;
+  width: 70vw;
+  height: 70vh;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  margin: auto; }
+
 #pageChoose {
   display: flex;
   margin: 8px; }
-
-.page {
-  flex: 1;
-  text-align: center;
-  vertical-align: middle;
-  line-height: 3rem;
-  cursor: pointer;
-  background: #ccc;
-  box-shadow: 6px 6px 6px -4px #2a2a2a;
-  border-radius: 5px;
-  margin: 8px;
-  user-select: none; }
-
-.page-has-selected {
-  box-shadow: 2px 2px 4px #9d9d9d;
-  background: #d1d1d1; }
-
-.page:active {
-  box-shadow: 1px 1px 4px #acacac;
-  background: #d1d1d1; }
+  #pageChoose .page {
+    flex: 1;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 3rem;
+    cursor: pointer;
+    background: #ccc;
+    box-shadow: 6px 6px 6px -4px #2a2a2a;
+    border-radius: 5px;
+    margin: 8px;
+    user-select: none; }
+  #pageChoose .page-has-selected {
+    box-shadow: 2px 2px 4px #9d9d9d;
+    background: #d1d1d1; }
+  #pageChoose .page:active {
+    box-shadow: 1px 1px 4px #acacac;
+    background: #d1d1d1; }
 
 #gap {
   height: 48px; }
@@ -103,15 +111,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #333;
   color: #fff; }
 
 .hor-show-state {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #333;
-  color: #fff; }
+  color: #fff;
+  padding: 12px 0; }
 
 .show-options {
   z-index: 15;
@@ -137,18 +144,18 @@
 
 .hor-wrapper {
   text-align: center;
-  height: 100%;
   width: 100%;
-  white-space: nowrap; }
+  white-space: nowrap;
+  display: flex; }
   .hor-wrapper li {
-    width: 30vw;
-    height: 200px; }
+    width: 150px;
+    height: 100px; }
   .hor-wrapper li:before {
-    width: calc(30vw + 50px + 50px + 50px);
-    height: calc(200px + 25px*2 + 25px *2 + 25px*2); }
+    width: calc(150px + 50px + 50px + 50px);
+    height: calc(100px + 25px*2 + 25px *2 + 25px*2); }
   .hor-wrapper li:after {
-    width: 30vw;
-    height: 200px; }
+    width: 150px;
+    height: 100px; }
 
 .wrapper {
   list-style: none; }

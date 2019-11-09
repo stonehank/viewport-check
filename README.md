@@ -26,9 +26,9 @@
 
 ### 待添加特性
 
-- [ ] 横向滚动判断
-- [ ] 进入视口回调的方向参数
-- [ ] 基于自定义父组件的滚动
+- [x] 横向滚动判断
+- [x] 进入视口回调的方向参数
+- [x] 基于自定义父组件的滚动
 
 ### 使用说明
 
@@ -61,18 +61,23 @@ new ViewportCheck({
 
 |Attr|Description|Default value|Type|Required|
 |:---|:---|:---:|:---:|:---:|
-|element  |需要监控的元素|/|HTMLElement|true|
-|parentEle|目标元素的父级|window|HTMLElement|false|
+|element  |需要监控的元素|/|HTMLElement[String]|true|
+|context|滚动容器元素|window|HTMLElement[String]|false|
 |offset|进出视口的偏移量|0.3|Number[String]|false|
-|baseAt|偏移量基于元素还是屏幕|target|(target/screen)|false|
+|baseAt|偏移量基于元素还是滚动容器|target|(target/context)|false|
 |padding|高度计算是否包括padding[更多](#关于高度计算)|true|Boolean|false|
 |border|高度计算是否包括border[更多](#关于高度计算)|true|Boolean|false|
 |margin|高度计算是否包括margin[更多](#关于高度计算)|false|Boolean|false|
-|useCssComputed|是否使用`css`的高度设置，默认为使用`getBoundingClientRect`，这个是为了避免当元素初始为`scale(0)`的情况，无法准确获取高度|false|Boolean|false|
+|useCssComputed|是否使用`css`的高度设置[更多](#使用CSS高度设置)|false|Boolean|false|
 |autoDestroy|是否在进入视口后销毁|false|Boolean|false|
-|direction|滚动方向|ver|(ver/hor)|false|
+|horizontal|是否横向滚动|false|Boolean|false|
 |enter|进入视口的回调函数|()=>{}|Function|false|
 |leave|离开视口的回调函数|()=>{}|Function|false|
+
+### 使用CSS高度设置
+
+默认情况下使用`getBoundingClientRect`计算元素高度，但是当元素初始为`scale(0)`的情况，无法准确获取的高度，
+因此需要使用`getComputedStyle`计算高度。
 
 
 ### 关于高度计算

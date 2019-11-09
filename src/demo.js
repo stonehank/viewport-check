@@ -30,7 +30,7 @@ window.onload=function(){
     },
     {
       offset:0.3,
-      baseAt:'screen'
+      baseAt:'context'
     },
     {
       offset:0.3,
@@ -44,7 +44,7 @@ window.onload=function(){
   let liOpt=[]
   let showStateList=[]
   let markList=[]
-
+  let instanceList=[]
   let switchBtn=document.getElementById('pageChoose')
   switchBtn.addEventListener('click',(ev) => {
     let ele=ev.target
@@ -57,6 +57,12 @@ window.onload=function(){
 
   render('ver')
   function render(type){
+    for(let i=0; i<instanceList.length; ++i){
+      if(instanceList[i]){
+        instanceList[i].destroy()
+        instanceList[i]=null
+      }
+    }
     let demo=null
     page.innerHTML=''
     let markClass=type+'-mark'
@@ -71,15 +77,15 @@ window.onload=function(){
       markList[i]= document.createElement('div')
       markList[i].className=markClass
       page.appendChild(markList[i])
-      new ViewportCheck({
+      instanceList[i]=new ViewportCheck({
         element: liList[i],
         ...liOpt[i],
-        parentEle:page,
-        direction:type,
+        context:'#page',
+        horizontal:type==='hor',
         enter: (dir) => {
           showStateList[i].innerText='Enter'
           showStateList[i].style.background='green'
-          createMark(markList[i],dir)
+          createMark(markList[i],dir,type)
         },
         leave: (dir) => {
           showStateList[i].innerHTML='Leave'
@@ -90,12 +96,15 @@ window.onload=function(){
   }
 
   function createMark(ele,dir,type){
-    let top=page.scrollTop
-    if(dir==='down')top+=page.offsetHeight
+    if(!ele)return
     if(type==='ver'){
+      let top=page.scrollTop
+      if(dir==='down')top+=page.offsetHeight
       ele.style.top=top+'px'
     }else{
-      // ele.style.left=top+'px'
+      let left=page.scrollLeft
+      if(dir==='right')left+=page.offsetWidth
+      ele.style.left=left+'px'
     }
   }
 
@@ -117,6 +126,13 @@ window.onload=function(){
       showState.className=prefix+'show-state'
       hr.className=prefix+'hr'
       if(options[i]!=null) {
+        if(prefix==='-ver'){
+          options[i].horizontal=false
+          options[i].parentEle='#page'
+        }else{
+          options[i].horizontal=true
+          options[i].parentEle='#page'
+        }
         showSetting.innerText = JSON.stringify(options[i]).replace(/"/g,'').split(',').join('\n')
         showSetting.className='show-options'
         liList.push(li)

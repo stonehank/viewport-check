@@ -5,6 +5,20 @@
     <title>Title</title>
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <style>
+        #page {
+            position: relative;
+            width: 100vw;
+            height: 70vh;
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+        }
+
+
+    </style>
+    <!--<script src="https://cdn.jsdelivr.net/npm/perfect-scrollbar@1.4.0/dist/perfect-scrollbar.min.js"></script>-->
+    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/perfect-scrollbar@1.4.0/css/perfect-scrollbar.css">-->
 </head>
 <body>
 <div id="description">
@@ -26,24 +40,12 @@
     </div>
 </div>
 <hr id="gap">
-<div class="show-result show-panel demo-1">Element 0 is out of viewpoint</div>
-<div class="show-dir show-panel demo-1">Direction show here</div>
-<ul class="wrapper">
-    <li><span>3</span></li>
-    <hr>
-    <li><span>2</span></li>
-    <hr>
-    <li><span>1</span></li>
-    <hr>
-    <li id="zero-1"><span>0</span></li>
-    <hr>
-    <li><span>-1</span></li>
-    <hr>
-    <li><span>-2</span></li>
-    <hr>
-    <li><span>-3</span></li>
-</ul>
-
+<div id="pageChoose">
+    <span class="page" data-page="0">vertical</span>
+    <span class="page" data-page="1">horizontal</span>
+</div>
+<div id="page">
+</div>
 
 </body>
 </html>

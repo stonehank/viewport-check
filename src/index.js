@@ -69,13 +69,15 @@ ViewportCheck.prototype.checkEleValid=function(){
       setTimeout(() => {
         if(totalTime>=5000){
           throw new Error('Viewport init failed(timeout). Is the element '+this.element+ ' still in animation? ')
-    }
+        }
         let {top:curT,left:curL}=this.element.getBoundingClientRect()
         if(curT===oldT && oldL===curL)return res(true)
-        check(delay+50)
+        oldT=curT
+        oldL=curL
+        check(delay+100)
       },delay)
     }
-    check(50)
+    check(100)
   })
 }
 

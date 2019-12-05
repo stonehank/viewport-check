@@ -16,6 +16,7 @@ function ViewportCheck ({
   padding = true,
   border = true,
   margin = false,
+  afterAnimation=true,
 } = {}) {
   if (!element) {
     throw new Error('Must need element!')
@@ -45,10 +46,37 @@ function ViewportCheck ({
   this.border=border
   this.padding=padding
   this.hasDestoryed=false
-  this.init=this.init.bind(this)
+  this.afterAnimation=afterAnimation
 
-  this.init()
+  this.init=this.init.bind(this)
+  if(this.afterAnimation){
+    this.checkEleValid().then(status => {
+      if(!status)return
+      this.init()
+    })
+  }else{
+    this.init()
+  }
   this.bindResize()
+}
+
+ViewportCheck.prototype.checkEleValid=function(){
+  let totalTime=0
+  let {top:oldT,left:oldL}=this.element.getBoundingClientRect()
+  return new Promise(res => {
+    let check=(delay) => {
+      delay=Math.min(delay,800)
+      setTimeout(() => {
+        if(totalTime>=5000){
+          throw new Error('Viewport init failed(timeout). Is the element '+this.element+ ' still in animation? ')
+    }
+        let {top:curT,left:curL}=this.element.getBoundingClientRect()
+        if(curT===oldT && oldL===curL)return res(true)
+        check(delay+50)
+      },delay)
+    }
+    check(50)
+  })
 }
 
 ViewportCheck.prototype.bindResize=function(){

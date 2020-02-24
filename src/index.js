@@ -67,7 +67,7 @@ ViewportCheck.prototype.checkEleValid=function(){
     let check=(delay) => {
       delay=Math.min(delay,800)
       setTimeout(() => {
-        if(totalTime>=5000){
+        if(totalTime>=7000){
           throw new Error('Viewport init failed(timeout). Is the element '+this.element+ ' still in animation? ')
         }
         let {top:curT,left:curL}=this.element.getBoundingClientRect()
@@ -166,8 +166,8 @@ ViewportCheck.prototype.init=function(){
 
   if (this.useCssComputed) {
     const rect = this.element.getBoundingClientRect()
-    this.offsetStart += (this.element.offsetHeight - rect.height) / 2
-    this.offsetEnd += (this.element.offsetHeight - rect.height) / 2
+    this.offsetStart += (this.element.offsetHeight - rect.height) * 0.5
+    this.offsetEnd += (this.element.offsetHeight - rect.height)* 0.5
   }
   this.listen()
   setTimeout(() => {
@@ -299,7 +299,20 @@ ViewportCheck.prototype.exec = function (direction) {
   }
 
   if (this.endPass && this.startPass) {
-    if (typeof this.enter === 'function') this.enter(direction)
+    if (typeof this.enter === 'function') {
+      let next=this.enter(direction)
+      if(this.useCssComputed){
+        this.useCssComputed=false
+        if(next && next.then){
+          next.then(()=>{
+            this.init()
+          })
+        }else{
+          this.init()
+        }
+      }
+
+    }
     if (this.autoDestroy){
       this.destroy()
       this.state='out-down'

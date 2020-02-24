@@ -299,25 +299,25 @@ ViewportCheck.prototype.exec = function (direction) {
   }
 
   if (this.endPass && this.startPass) {
+    let next=null
     if (typeof this.enter === 'function') {
-      let next=this.enter(direction)
-      if(this.useCssComputed){
-        this.useCssComputed=false
-        if(next && next.then){
-          next.then(()=>{
-            this.init()
-          })
-        }else{
-          this.init()
-        }
-      }
-
+      next=this.enter(direction)
     }
     if (this.autoDestroy){
       this.destroy()
       this.state='out-down'
     }else{
       this.state = 'in'
+      if(this.useCssComputed){
+        this.useCssComputed=false
+        if(next && next.then){
+          next.then(() => {
+            this.init()
+          })
+        }else{
+          this.init()
+        }
+      }
     }
   }
 }
